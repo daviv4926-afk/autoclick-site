@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoClick - Automação Pixelada</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pixel-green: #00ff41;
+            --pixel-cyan: #00ffff;
+            --pixel-purple: #ff00ff;
+            --pixel-yellow: #ffff00;
+            --dark-bg: #0a0a0a;
+            --terminal-green: #33ff33;
+            --shadow-color: #000000;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'VT323', monospace;
+            background: var(--dark-bg);
+            color: var(--pixel-green);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><rect width="16" height="16" fill="%2300ff41"/></svg>'), auto;
+        }
+
+        /* Efeito CRT */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.15),
+                rgba(0, 0, 0, 0.15) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 9999;
+            animation: scanlines 8s linear infinite;
+        }
+
+        @keyframes scanlines {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(2px); }
+        }
+
+        /* Grid de fundo pixelado */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 65, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Header com efeito neon */
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .logo {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 3.5em;
+            color: var(--pixel-green);
+            text-shadow: 
+                0 0 10px var(--pixel-green),
+                0 0 20px var(--pixel-green),
+                0 0 30px var(--pixel-green),
+                4px 4px 0 var(--shadow-color);
+            animation: glitch 3s infinite, float 3s ease-in-out infinite;
+            letter-spacing: 8px;
+            margin-bottom: 20px;
+            image-rendering: pixelated;
+        }
+
+        @keyframes glitch {
+            0%, 90%, 100% { transform: translateX(0) skew(0deg); }
+            92% { transform: translateX(-3px) skew(2deg); }
+            94% { transform: translateX(3px) skew(-2deg); }
+            96% { transform: translateX(-3px) skew(1deg); }
+            98% { transform: translateX(3px) skew(-1deg); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .tagline {
+            font-size: 1.8em;
+            color: var(--pixel-cyan);
+            text-shadow: 2px 2px 0 var(--shadow-color);
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 49%, 100% { opacity: 1; }
+            50%, 99% { opacity: 0.3; }
+        }
+
+        /* Pixel boxes */
+        .pixel-box {
+            background: rgba(0, 20, 0, 0.9);
+            border: 4px solid var(--pixel-green);
+            border-radius: 0;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 
+                0 0 20px rgba(0, 255, 65, 0.3),
+                inset 0 0 20px rgba(0, 255, 65, 0.1),
+                8px 8px 0 rgba(0, 0, 0, 0.5);
+            position: relative;
+            image-rendering: pixelated;
+        }
+
+        .pixel-box::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 2px dashed var(--pixel-green);
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .pixel-box h2 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            color: var(--pixel-yellow);
+            text-shadow: 3px 3px 0 var(--shadow-color);
+            letter-spacing: 3px;
+        }
+
+        .pixel-box h3 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.2em;
+            margin: 20px 0 15px 0;
+            color: var(--pixel-cyan);
+            text-shadow: 2px 2px 0 var(--shadow-color);
+        }
+
+        .pixel-box p,
+        .pixel-box li {
+            font-size: 1.4em;
+            line-height: 1.8;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 0 var(--shadow-color);
+        }
+
+        .pixel-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .pixel-box li::before {
+            content: '▸ ';
+            color: var(--pixel-purple);
+            font-weight: bold;
+        }
+
+        /* Formulário de suporte */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1em;
+            margin-bottom: 10px;
+            color: var(--pixel-cyan);
+            text-shadow: 2px 2px 0 var(--shadow-color);
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0, 50, 0, 0.5);
+            border: 3px solid var(--pixel-green);
+            color: var(--terminal-green);
+            font-family: 'VT323', monospace;
+            font-size: 1.3em;
+            transition: all 0.3s;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+            image-rendering: pixelated;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--pixel-cyan);
+            box-shadow: 
+                0 0 15px var(--pixel-cyan),
+                inset 0 0 10px rgba(0, 255, 255, 0.2);
+            background: rgba(0, 80, 80, 0.3);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        /* Botão pixelado */
+        .pixel-button {
+            background: var(--pixel-green);
+            color: var(--dark-bg);
+            border: 4px solid var(--pixel-green);
+            padding: 15px 40px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.1s;
+            box-shadow: 
+                6px 6px 0 var(--shadow-color),
+                0 0 20px rgba(0, 255, 65, 0.5);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .pixel-button:hover {
+            background: var(--dark-bg);
+            color: var(--pixel-green);
+            transform: translate(2px, 2px);
+            box-shadow: 
+                4px 4px 0 var(--shadow-color),
+                0 0 30px rgba(0, 255, 65, 0.8);
+        }
+
+        .pixel-button:active {
+            transform: translate(6px, 6px);
+            box-shadow: none;
+        }
+
+        /* Destaque de aviso */
+        .warning-box {
+            background: rgba(80, 0, 0, 0.7);
+            border: 4px solid #ff0000;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.4); }
+            50% { box-shadow: 0 0 30px rgba(255, 0, 0, 0.7); }
+        }
+
+        .warning-box p {
+            color: #ff4444;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1em;
+            line-height: 2;
+        }
+
+        /* Decorações pixeladas */
+        .pixel-decoration {
+            width: 40px;
+            height: 40px;
+            background: var(--pixel-purple);
+            position: absolute;
+            box-shadow: 0 0 10px var(--pixel-purple);
+            animation: spin 4s linear infinite;
+        }
+
+        .pixel-decoration.top-left {
+            top: -10px;
+            left: -10px;
+        }
+
+        .pixel-decoration.top-right {
+            top: -10px;
+            right: -10px;
+        }
+
+        .pixel-decoration.bottom-left {
+            bottom: -10px;
+            left: -10px;
+        }
+
+        .pixel-decoration.bottom-right {
+            bottom: -10px;
+            right: -10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 60px;
+            border-top: 4px solid var(--pixel-green);
+            font-size: 1.3em;
+            color: var(--pixel-cyan);
+            text-shadow: 2px 2px 0 var(--shadow-color);
+        }
+
+        /* Mensagem de sucesso/erro */
+        .message {
+            display: none;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1em;
+            text-align: center;
+            border: 3px solid;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .message.success {
+            background: rgba(0, 80, 0, 0.8);
+            border-color: var(--pixel-green);
+            color: var(--pixel-green);
+        }
+
+        .message.error {
+            background: rgba(80, 0, 0, 0.8);
+            border-color: #ff0000;
+            color: #ff4444;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2em;
+                letter-spacing: 4px;
+            }
+
+            .tagline {
+                font-size: 1.3em;
+            }
+
+            .pixel-box h2 {
+                font-size: 1.3em;
+            }
+
+            .pixel-box h3 {
+                font-size: 1em;
+            }
+
+            .pixel-box p,
+            .pixel-box li {
+                font-size: 1.2em;
+            }
+
+            label {
+                font-size: 0.8em;
+            }
+
+            .pixel-button {
+                font-size: 0.9em;
+                padding: 12px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="logo">AutoClick</h1>
+            <p class="tagline">&gt; Automação Retro Style _</p>
+        </header>
+
+        <!-- Downloads -->
+        <section class="pixel-box" style="position: relative; text-align: center;">
+            <div class="pixel-decoration top-left"></div>
+            <div class="pixel-decoration top-right"></div>
+            <h2>// DOWNLOADS</h2>
+            <p style="margin-bottom: 25px;">Baixe a versão mais recente do AutoClick!</p>
+            
+            <div style="background: rgba(0, 40, 0, 0.5); border: 3px dashed var(--pixel-cyan); padding: 30px; margin: 20px 0;">
+                <p style="color: var(--pixel-yellow); font-family: 'Press Start 2P', cursive; font-size: 1.1em; margin-bottom: 20px;">
+                    VERSÃO 0.2
+                </p>
+                <p style="margin-bottom: 25px; font-size: 1.3em;">
+                    Clique no botão abaixo para baixar o AutoClick.exe
+                </p>
+                
+                <!-- COLOQUE SEU LINK AQUI -->
+                <a href="auto_clicker.exe" download class="pixel-button" style="display: inline-block; text-decoration: none;">
+                    ⬇ BAIXAR AUTOCLICK.EXE ⬇
+                </a>
+                
+                <p style="margin-top: 25px; font-size: 1.2em; color: var(--pixel-cyan);">
+                    Tamanho: ~95/96MB | Windows 7/8/10/11
+                </p>
+            </div>
+
+            <div class="warning-box" style="margin-top: 20px;">
+                <p>⚠ IMPORTANTE ⚠</p>
+                <p style="margin-top: 10px; font-size: 0.9em;">
+                    Execute apenas se você confia na fonte! Antivírus podem dar falso positivo.
+                </p>
+            </div>
+        </section>
+
+        <!-- Sobre -->
+        <section class="pixel-box" style="position: relative;">
+            <div class="pixel-decoration top-left"></div>
+            <div class="pixel-decoration top-right"></div>
+            <h2>// SOBRE</h2>
+            <p>Bem-vindo ao AutoClick, sua ferramenta de automação com estilo retrô! Desenvolvida para otimizar suas tarefas repetitivas com eficiência máxima.</p>
+            <p>Nossa missão é trazer produtividade com um toque nostálgico dos anos 80/90.</p>
+        </section>
+
+        <!-- Termos de Uso -->
+        <section class="pixel-box" style="position: relative;">
+            <div class="pixel-decoration bottom-left"></div>
+            <div class="pixel-decoration bottom-right"></div>
+            <h2>// TERMOS DE USO</h2>
+            
+            <div class="warning-box">
+                <p>⚠ ATENÇÃO ⚠</p>
+                <p style="margin-top: 15px;">NÃO NOS RESPONSABILIZAMOS POR HACKS OU PESSOAS QUE USARAM PARA COISAS ERRADAS</p>
+            </div>
+
+            <h3>&gt; Uso Responsável</h3>
+            <ul>
+                <li>O AutoClick é uma ferramenta legítima de automação</li>
+                <li>Use apenas em aplicações e jogos onde é permitido</li>
+                <li>O usuário é 100% responsável pelo uso do software</li>
+                <li>Não incentivamos nem apoiamos atividades fraudulentas</li>
+            </ul>
+
+            <h3>&gt; Isenção de Responsabilidade</h3>
+            <ul>
+                <li>Não nos responsabilizamos por banimentos em jogos</li>
+                <li>Não nos responsabilizamos por invasões ou hacks</li>
+                <li>Não nos responsabilizamos por uso indevido da ferramenta</li>
+                <li>Não oferecemos suporte para atividades ilegais</li>
+            </ul>
+
+            <h3>&gt; Aceitação dos Termos</h3>
+            <p>Ao utilizar o AutoClick, você concorda com todos os termos acima e assume total responsabilidade por suas ações.</p>
+        </section>
+
+        <!-- Funcionalidades -->
+        <section class="pixel-box">
+            <h2>// FUNCIONALIDADES</h2>
+            <ul>
+                <li>Cliques automáticos personalizáveis</li>
+                <li>Configuração de intervalo e repetições</li>
+                <li>Atalhos de teclado para ativar/desativar</li>
+                <li>Interface retro pixelada</li>
+                <li>Leve e eficiente</li>
+                <li>Sem anúncios ou malware</li>
+            </ul>
+        </section>
+
+        <!-- Suporte -->
+        <section class="pixel-box">
+            <h2>// SUPORTE TÉCNICO</h2>
+            <p>Precisa de ajuda? Entre em contato conosco através do formulário abaixo:</p>
+            
+            <div class="warning-box" style="margin: 25px 0;">
+                <p>⚠ AVISO IMPORTANTE ⚠</p>
+                <p style="margin-top: 15px;">NÃO USE MENSAGENS FRAUDULENTAS, GOLPES E MENSAGENS ABUSIVAS!!</p>
+            </div>
+            
+            <div id="message" class="message"></div>
+
+            <form id="supportForm">
+                <div class="form-group">
+                    <label for="name">[ NOME ]</label>
+                    <input type="text" id="name" name="name" required placeholder="Digite seu nome...">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">[ E-MAIL ]</label>
+                    <input type="email" id="email" name="email" required placeholder="seuemail@exemplo.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="subject">[ ASSUNTO ]</label>
+                    <input type="text" id="subject" name="subject" required placeholder="Qual é o problema?">
+                </div>
+
+                <div class="form-group">
+                    <label for="message-text">[ MENSAGEM ]</label>
+                    <textarea id="message-text" name="message" required placeholder="Descreva seu problema em detalhes..."></textarea>
+                </div>
+
+                <button type="submit" class="pixel-button">[ ENVIAR ]</button>
+            </form>
+        </section>
+
+        <footer>
+            <p>AutoClick © 2026 | Feito com &lt;3 em estilo pixel art</p>
+            <p style="margin-top: 10px;">GAME OVER? NEVER!</p>
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById('supportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const subject = document.getElementById('subject').value;
+            const messageText = document.getElementById('message-text').value;
+            const messageDiv = document.getElementById('message');
+            
+            // Criar corpo do email
+            const body = `Nome: ${name}%0D%0AEmail: ${email}%0D%0A%0D%0AMensagem:%0D%0A${messageText}`;
+            
+            // Criar link mailto
+            const mailtoLink = `mailto:daviv4926@gmail.com?subject=${encodeURIComponent(subject)}&body=${body}`;
+            
+            // Abrir cliente de email
+            window.location.href = mailtoLink;
+            
+            // Mostrar mensagem de sucesso
+            messageDiv.textContent = 'ABRINDO SEU CLIENTE DE EMAIL...';
+            messageDiv.className = 'message success';
+            messageDiv.style.display = 'block';
+            
+            // Limpar formulário após 2 segundos
+            setTimeout(() => {
+                this.reset();
+                messageDiv.style.display = 'none';
+            }, 2000);
+        });
+
+        // Efeito de digitação no tagline
+        const tagline = document.querySelector('.tagline');
+        const text = tagline.textContent;
+        tagline.textContent = '';
+        let i = 0;
+
+        function typeWriter() {
+            if (i < text.length) {
+                tagline.textContent += text.charAt(i);
+                i++;
+                setTimeout(typeWriter, 100);
+            }
+        }
+
+        setTimeout(typeWriter, 500);
+    </script>
+</body>
+</html>
